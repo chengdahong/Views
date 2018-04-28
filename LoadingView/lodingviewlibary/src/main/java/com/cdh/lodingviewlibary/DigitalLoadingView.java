@@ -2,6 +2,7 @@ package com.cdh.lodingviewlibary;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,7 +26,7 @@ public class DigitalLoadingView extends View implements ValueAnimator.AnimatorUp
 
     private RectF mArcRectF;
 
-    private int mCircelRadius;
+    private int mCircleRadius;
 
     private int mArcColor;
     private int mCircleColor;
@@ -67,21 +68,24 @@ public class DigitalLoadingView extends View implements ValueAnimator.AnimatorUp
 
     private void init(Context context, AttributeSet attrs) {
 
-        mArcColor = Color.CYAN;
-        mCircleColor = Color.BLUE;
-        mTextColor = Color.WHITE;
-        mTextSize = 50;
+
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.DigitalLoadingView);
+        mArcColor = ta.getColor(R.styleable.DigitalLoadingView_arcColor, Color.CYAN);
+        mCircleColor = ta.getColor(R.styleable.DigitalLoadingView_circleColor, Color.BLUE);
+        mTextColor = ta.getColor(R.styleable.DigitalLoadingView_textColor, Color.WHITE);
+        mTextSize = (int) ta.getDimension(R.styleable.DigitalLoadingView_textSize, 60);
         mDuration = 1000;
-
-
-        mCircelRadius = 150;
-        mArcRectF = new RectF(-mCircelRadius - mArcWidth / 2, -mCircelRadius - mArcWidth / 2, mCircelRadius + mArcWidth / 2, mCircelRadius + mArcWidth / 2);
-
+        mCircleRadius = (int) ta.getDimension(R.styleable.DigitalLoadingView_circleRadius, 100);
+        mArcWidth = (int) ta.getDimension(R.styleable.DigitalLoadingView_arcWidth, 20);
+        ta.recycle();
+        Log.d("chengdh", "mCircleRadius: " + mCircleRadius + ", mArcWidth: " + mArcWidth);
+        mArcRectF = new RectF(-mCircleRadius - mArcWidth / 2, -mCircleRadius - mArcWidth / 2, mCircleRadius + mArcWidth / 2, mCircleRadius + mArcWidth / 2);
+        Log.d("chengdh", "left: " + mArcRectF.left + ", top: " + mArcRectF.top + ", right: " + mArcRectF.right + ", bottom: " + mArcRectF.bottom);
         mArcPaint = new Paint();
         mArcPaint.setStyle(Paint.Style.STROKE);
         mArcPaint.setAntiAlias(true);
         mArcPaint.setColor(mArcColor);
-        mArcPaint.setStrokeWidth(20);
+        mArcPaint.setStrokeWidth(mArcWidth);
 
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
@@ -109,10 +113,10 @@ public class DigitalLoadingView extends View implements ValueAnimator.AnimatorUp
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.translate(mCircelRadius + mArcWidth, mCircelRadius + mArcWidth);
+        canvas.translate(mCircleRadius + mArcWidth, mCircleRadius + mArcWidth);
 
         // 画圆
-        canvas.drawCircle(0, 0, mCircelRadius, mCirclePaint);
+        canvas.drawCircle(0, 0, mCircleRadius, mCirclePaint);
         // 画外圆弧
         canvas.drawArc(mArcRectF, mStartAngle, mSweepAngle, false, mArcPaint);
         // 画百分比
@@ -142,13 +146,13 @@ public class DigitalLoadingView extends View implements ValueAnimator.AnimatorUp
         if (widthMode == MeasureSpec.EXACTLY) { // match_parent和精确的值
             width = widthSize;
         } else if (widthMode == MeasureSpec.AT_MOST) { // 如果是 wrap_center
-            width = getPaddingLeft() + mCircelRadius * 2 + mArcWidth * 2 + getPaddingRight();
+            width = getPaddingLeft() + mCircleRadius * 2 + mArcWidth * 2 + getPaddingRight();
         }
 
         if (heightMode == MeasureSpec.EXACTLY) { // match_parent和精确的值
             height = heightSize;
         } else if (heightMode == MeasureSpec.AT_MOST) { // 如果是 wrap_center
-            height = getPaddingTop() + mCircelRadius * 2 + mArcWidth * 2 + getPaddingBottom();
+            height = getPaddingTop() + mCircleRadius * 2 + mArcWidth * 2 + getPaddingBottom();
         }
 
         setMeasuredDimension(width, height);
@@ -163,6 +167,21 @@ public class DigitalLoadingView extends View implements ValueAnimator.AnimatorUp
         float space = 360.0f * curValue / 100.0f;
         mSweepAngle = space;
         Log.d("chengdh", "SweepAngle: " + mSweepAngle);
+        invalidate();
+    }
+
+    /**
+     * 设置进度
+     *
+     * @param progress 0 ~ 100
+     */
+    public void setProgress(float progress) {
+        if (progress >= 100) {
+            progress = 100;
+        }
+        mPercentText = progress + "%";
+        float space = 360.0f * progress / 100.0f;
+        mSweepAngle = space;
         invalidate();
     }
 

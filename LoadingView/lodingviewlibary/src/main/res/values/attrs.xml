@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DigitalLoadingView">
+        <attr name="arcColor" format="color"/>
+        <attr name="circleColor" format="color"/>
+        <attr name="textColor" format="color"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="circleRadius" format="dimension"/>
+        <attr name="arcWidth" format="dimension"/>
+    </declare-styleable>
+</resources>

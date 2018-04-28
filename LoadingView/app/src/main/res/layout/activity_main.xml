@@ -8,7 +8,13 @@
     tools:context="com.cdh.loadingview.MainActivity">
 
     <com.cdh.lodingviewlibary.DigitalLoadingView
+        android:id="@+id/loadding"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:arcColor="@color/colorAccent"
+        app:arcWidth="30dp"
+        app:circleColor="@color/colorPrimary"
+        app:circleRadius="80dp"
+        app:textColor="#00ff00"/>
 
 </android.support.constraint.ConstraintLayout>
